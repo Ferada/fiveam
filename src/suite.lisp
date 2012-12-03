@@ -25,13 +25,13 @@ NAME::
   The symbol naming the test.
 
 DESCRIPTION::
-  A string describing the contents/purpose of this suite. 
+  A string describing the contents/purpose of this suite.
 
 IN (a symbol), if provided, causes this suite te be nested in the
 suite named by `IN`. If `IN` is `NIL`, as opposed to not being passed
 at all, the new suite will not be a part of any existing suite.
 
-[NOTE]
+\[NOTE]
 This macro is built on top of `make-suite` as such it, like `make-suite`,
 will overrwrite any existing suite named `NAME`.
 

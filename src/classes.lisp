@@ -11,11 +11,11 @@
                :documentation "The list of AND, OR, NOT forms specifying when to run this test.")
    (status :initarg :status :accessor status :initform :unknown
            :documentation "A symbol specifying the current status
-	   of this test. Either: T - this test (and all its
-	   dependencies, have passed. NIL - this test
-	   failed (either it failed or its dependecies weren't
-	   met. :circular this test has a circular dependency
-	   and was skipped. Or :depends-not-satisfied or :resolving")
+           of this test. Either: T - this test (and all its
+           dependencies, have passed. NIL - this test
+           failed (either it failed or its dependecies weren't
+           met. :circular this test has a circular dependency
+           and was skipped. Or :depends-not-satisfied or :resolving")
    (profiling-info :accessor profiling-info
                    :initform nil
                    :documentation "An object representing how
@@ -39,8 +39,8 @@
 (defclass test-suite (testable-object)
   ((tests :accessor tests :initform (make-hash-table :test 'eql)
           :documentation "The hash table mapping names to test
-	  objects in this suite. The values in this hash table
-	  can be either test-cases or other test-suites.")
+          objects in this suite. The values in this hash table
+          can be either test-cases or other test-suites.")
    (fixture :accessor fixture :initform nil :initarg :fixture
             :documentation "FIXTURE to use, by default, for tests in
             this suite."))

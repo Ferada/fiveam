@@ -4,12 +4,12 @@ body {
   padding: 0px; margin: 0px;
 }
 
-.qbook { width: 600px; background-color: #FFFFFF; margin: 0px; 
+.qbook { width: 600px; background-color: #FFFFFF; margin: 0px;
          border-left: 3em solid #660000; padding: 3px; }
 
 h1 { text-align: center; margin: 0px;
-     color: #333333; 
-     border-bottom: 0.3em solid #660000; 
+     color: #333333;
+     border-bottom: 0.3em solid #660000;
 }
 
 p { padding-left: 1em; }
@@ -19,12 +19,12 @@ h2 { border-bottom: 0.2em solid #000000; font-family: verdana; }
 h3 { border-bottom: 0.1em solid #000000; }
 
 pre.code {
-	background-color: #eeeeee;
-	border: solid 1px #d0d0d0;
+        background-color: #eeeeee;
+        border: solid 1px #d0d0d0;
         overflow: auto;
 }
 
-pre.code * .paren { color: #666666; } 
+pre.code * .paren { color: #666666; }
 
 pre.code a:active  { color: #000000; }
 pre.code a:link    { color: #000000; }

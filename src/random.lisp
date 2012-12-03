@@ -51,9 +51,9 @@ evaluated. BINDING is either a symbol or a list which will be passed
 to destructuring-bind. GUARD is a form which, if present, stops BODY
 from executing when it returns NIL. The GUARDS are evaluated after all
 the random data has been generated and they can refer to the current
-value of any binding. 
+value of any binding.
 +
-[NOTE]
+\[NOTE]
 Generator forms, unlike guard forms, can not contain references to the
 bound variables.
 
@@ -201,7 +201,7 @@ than or equal to MIN and less than or equal to MIN."
     (long-float most-positive-long-float)) )
 
 (defun gen-float (&key bound (type 'short-float) min max)
-  "Returns a generator which producs floats of type TYPE. 
+  "Returns a generator which producs floats of type TYPE.
 
 BOUND::
 
@@ -223,7 +223,7 @@ TYPE::
 The type of the returned float. Defaults to `SHORT-FLOAT`. Effects the
 default values of BOUND, MIN and MAX.
 
-[NOTE]
+\[NOTE]
 Since GEN-FLOAT is built on CL:RANDOM the distribution of returned
 values will be continuous, not discrete. In other words: the values
 will be evenly distributed across the specified numeric range, the
@@ -309,7 +309,7 @@ ELEMENT-TYPE::
 
 The type of array to create.
 
-ELEMENTS:: 
+ELEMENTS::
 
 The random element generator.
 "

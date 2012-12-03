@@ -262,7 +262,7 @@ is not evaluated."
          (return-from ,block-name nil)))))
 
 (defmacro finishes (&body body)
-  "Generates a pass if BODY executes to normal completion. 
+  "Generates a pass if BODY executes to normal completion.
 
 In other words if body signals a condition (which is then handled),
 return-froms or throws this test fails."
