@@ -36,8 +36,7 @@ named KEY in the *TEST* hash table."
   (remhash key *test*))
 
 (defun test-names ()
-  (loop for test being the hash-keys of *test*
-        collect test))
+  (hash-table-keys *test*))
 
 (defmacro test (name &body body)
   "Deprecated. See DEF-TEST."
