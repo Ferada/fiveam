@@ -53,7 +53,7 @@ def-test) to pass to tests in this suite."
 
 (defun remove-from-suites (test-name)
   (when (get-test test-name)
-    ;; if this suite alruady exists, and its :IN some other suite, remove it.
+    ;; if this suite already exists, and its :IN some other suite, remove it.
     (dolist (s (list-all-suites))
       (when (gethash test-name (tests s))
         (remhash test-name (tests s))))))
