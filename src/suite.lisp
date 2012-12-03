@@ -105,18 +105,21 @@ will be created (as per DEF-SUITE)"
               :fail-on-error nil
               ,@def-suite-args))
 
-(defmacro %in-suite (suite-name &rest def-suite-args &key fail-on-error &allow-other-keys)
-  (declare (ignore fail-on-error))
-  (with-gensyms (suite)
-    (let ((fail-on-error (getf def-suite-args :fail-on-error t)))
-      (remf def-suite-args :fail-on-error)
+(defmacro %in-suite (suite-name
+                     &key description (in nil in-p) (fixture nil fixture-p)
+                          (fail-on-error t))
+  (let ((def-suite-args
+          `(,@(when description `(:description ,description))
+            ,@(when in-p `(:in ',in))
+            ,@(when fixture-p `(:fixture ',fixture)))))
+    (with-gensyms (suite)
       `(progn
          (if-let (,suite (get-test ',suite-name))
            (setf *suite* ,suite)
            (progn
-             (when ,fail-on-error
-               (cerror "Create a new suite named ~A."
-                       "Unknown suite ~A." ',suite-name))
+             ,@(when fail-on-error
+                 `((cerror "Create a new suite named ~A."
+                           "Unknown suite ~A." ',suite-name)))
              (setf (get-test ',suite-name) (make-suite ',suite-name ,@def-suite-args)
                    *suite* (get-test ',suite-name))))
          ',suite-name))))
