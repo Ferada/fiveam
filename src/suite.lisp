@@ -51,38 +51,56 @@ def-test) to pass to tests in this suite."
      (def-suite ,name ,@def-suite-args)
      (in-suite ,name)))
 
-(defun remove-from-suites (test-name)
-  (when (get-test test-name)
-    ;; if this suite already exists, and its :IN some other suite, remove it.
-    (dolist (s (list-all-suites))
-      (when (gethash test-name (tests s))
-        (remhash test-name (tests s))))))
-
 (declaim (special *suite*))
 
 (defun make-suite (name &key description ((:in parent-suite) *suite*) fixture)
   "Create a new test suite object.
 
 Overrides any existing suite named NAME."
-  (remove-from-suites name)
-  (let ((suite (make-instance 'test-suite :name name :fixture fixture)))
-    (when description
-      (setf (description suite) description))
+  (let ((suite (make-instance 'test-suite :name name)))
+    (%update-suite name suite description parent-suite fixture)
     (setf (gethash name *suites*) suite)
-    (loop for i in (ensure-list parent-suite)
-          for in-suite = (get-test i)
-          do (progn
-               (when (null in-suite)
-                 (cerror "Create a new suite named ~A." "Unknown suite ~A." i)
-                 (setf (get-test in-suite) (make-suite i)
-                       in-suite (get-test in-suite)))
-               (setf (gethash name (tests in-suite)) suite)))
     (setf (get-test name) suite)
     suite))
+
+(defun update-suite (name suite
+                     &key description ((:in parent-suite) *suite*) fixture)
+  (%update-suite name suite description parent-suite fixture))
 
 (defun list-all-suites ()
   "Returns an unordered LIST of all suites."
   (hash-table-values *suites*))
+
+(defun remove-from-suites (name &optional parents)
+  (when (get-test name)
+    ;; if this suite already exists, and its :IN some other suite, remove it.
+    (dolist (s (list-all-suites))
+      (let ((tests (tests s)))
+        (when (and (not (member (name s) parents :test #'eq))
+                   (gethash name tests))
+          (remhash name tests))))))
+
+(defun add-to-suites (name suite parents)
+  (dolist (i parents)
+    (let ((in-suite (get-test i)))
+      (when (null in-suite)
+        (cerror "Create a new suite named ~A." "Unknown suite ~A." i)
+        (setf in-suite (make-suite i)
+              (get-test in-suite) in-suite))
+      (setf (gethash name (tests in-suite)) suite))))
+
+(defun remove-from-add-to-suites (test-name suite parent-suite)
+  ;; prevent cycles
+  (unless (eq suite parent-suite)
+    (let ((parents (ensure-list parent-suite)))
+      (remove-from-suites test-name parents)
+      (add-to-suites test-name suite parents))))
+
+(defun %update-suite (name suite description parent-suite fixture)
+  (setf (description suite) description)
+  (setf (fixture suite) fixture)
+  (remove-from-add-to-suites name suite parent-suite)
+  suite)
 
 ;;;; ** Managing the Current Suite
 
@@ -100,7 +118,7 @@ See also: `DEF-SUITE` and `*SUITE*`. "
 
 (defmacro in-suite* (suite-name &rest def-suite-args)
   "Same effect as `IN-SUITE`, but if `SUITE-NAME` does not exist it
-will be created (as per DEF-SUITE)"
+will be created (as per DEF-SUITE), or updated with the new arguments."
   `(%in-suite ,suite-name
               :fail-on-error nil
               ,@def-suite-args))
@@ -115,13 +133,12 @@ will be created (as per DEF-SUITE)"
     (with-gensyms (suite)
       `(progn
          (if-let (,suite (get-test ',suite-name))
-           (setf *suite* ,suite)
+           (setf *suite* (update-suite ',suite-name ,suite ,@def-suite-args))
            (progn
              ,@(when fail-on-error
                  `((cerror "Create a new suite named ~A."
                            "Unknown suite ~A." ',suite-name)))
-             (setf (get-test ',suite-name) (make-suite ',suite-name ,@def-suite-args)
-                   *suite* (get-test ',suite-name))))
+             (setf *suite* (make-suite ',suite-name ,@def-suite-args))))
          ',suite-name))))
 
 ;; Copyright (c) 2002-2003, Edward Marco Baringer

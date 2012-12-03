@@ -292,3 +292,16 @@
 
     (def-test foo (:suite nil) t)
     (is-false (gethash 'foo (tests *suite*)))))
+
+
+;;;; test suites, *suite*, in-suite* behaviour
+
+(def-test suite-redefinition ()
+  (rem-test 'a-suite)
+  (in-suite* a-suite :description "a suite")
+  (let ((a-suite (get-test 'a-suite)))
+    (is (string= "a suite" (description a-suite)))
+
+    (in-suite* a-suite :description "the same suite")
+    (is (eq a-suite (get-test 'a-suite)))
+    (is (string= "the same suite" (description a-suite)))))
